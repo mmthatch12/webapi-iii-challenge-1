@@ -8,6 +8,16 @@ function logger(req, res, next) {
   next()
 }
 
+function validateUserId(req, res, next) {
+  if(userId) {
+    userId = req.user
+  } else {
+    res.status(400).json({ message: "invalid user id" })
+  }
+
+  next()
+}
+
 server.use(express.json())
 server.use(logger)
 
