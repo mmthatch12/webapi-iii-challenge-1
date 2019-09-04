@@ -1,5 +1,7 @@
 const express = require('express');
 
+const userDB = require('./userDb')
+
 const router = express.Router();
 
 router.post('/', (req, res) => {
@@ -11,7 +13,13 @@ router.post('/:id/posts', (req, res) => {
 });
 
 router.get('/', (req, res) => {
-
+    userDB.get()
+        .then(user => {
+            res.status(200).json(user)
+        })
+        .catch(error => {
+            res.status(500).json({ error: "Could not load users"})
+        })
 });
 
 router.get('/:id', (req, res) => {
