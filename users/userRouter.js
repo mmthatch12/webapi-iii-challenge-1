@@ -5,7 +5,7 @@ const postDB = require('../posts/postDb')
 
 const router = express.Router();
 
-router.post('/', (req, res) => {
+router.post('/', validateUser, (req, res) => {
     const useradd = req.body
 
     userDB.insert(useradd)
@@ -95,8 +95,7 @@ router.put('/:id', (req, res) => {
 
 //the 400 error isn't working yet, not sure what he means by store
 function validateUserId(req, res, next) {
-    let userId = req.params.id
-    if(userId) {
+    if(req.id) {
         userId = req.user
         
       } else {
@@ -112,7 +111,7 @@ function validateUser(req, res, next) {
       } else if (!req.body.name) {
         res.status(400).json({ message: "missing required name field" })
       } else {
-        res.sent('User validated!')
+        res.send('User validated!')
       }
     
       next();
