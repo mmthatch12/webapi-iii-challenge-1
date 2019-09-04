@@ -5,11 +5,19 @@ const userDB = require('./userDb')
 const router = express.Router();
 
 router.post('/', (req, res) => {
+    const useradd = req.body
 
+    userDB.insert(useradd)
+        .then(user => {
+            res.status(201).json(user)
+        })
+        .catch(error => {
+            res.status(500).json({ error: "Could not add user"})
+        })
 });
 
 router.post('/:id/posts', (req, res) => {
-
+    
 });
 
 router.get('/', (req, res) => {
@@ -22,7 +30,7 @@ router.get('/', (req, res) => {
         })
 });
 
-router.get('/:id', (req, res) => {
+router.get('/:id', validateUserId, (req, res) => {
     const userId = req.params.id;
 
     userDB.getById(userId)
@@ -34,10 +42,10 @@ router.get('/:id', (req, res) => {
         })
 });
 
-router.get('/:id/posts', (req, res) => {
-    const userId = req.params.id;
+router.get('/:id/posts', validateUserId, (req, res) => {
+    const d = req.params.id;
 
-    userDB.getUserPosts(userId)
+    userDB.getUserPosts(id)
         .then(user => {
             res.status(200).json(user)
         })
@@ -56,9 +64,12 @@ router.put('/:id', (req, res) => {
 
 //custom middleware
 
+//the 400 error isn't working yet, not sure what he means by store
 function validateUserId(req, res, next) {
+    let userId = req.params.id
     if(userId) {
         userId = req.user
+        
       } else {
         res.status(400).json({ message: "invalid user id" })
       }
