@@ -1,6 +1,7 @@
 const express = require('express');
 
 const userDB = require('./userDb')
+const postDB = require('../posts/postDb')
 
 const router = express.Router();
 
@@ -16,8 +17,19 @@ router.post('/', (req, res) => {
         })
 });
 
+//this isn't working yet, not sure what method to use to add posts to a user?
 router.post('/:id/posts', (req, res) => {
-    
+    const useradd = req.body
+    const id = req.params.id
+
+    userDB.insert(useradd)
+        .then(user => {
+            res.status(201).json(user)
+        })
+        .catch(error => {
+            res.status(500).json({ error: "Could not add to new user"})
+        })
+
 });
 
 router.get('/', (req, res) => {
@@ -43,7 +55,7 @@ router.get('/:id', validateUserId, (req, res) => {
 });
 
 router.get('/:id/posts', validateUserId, (req, res) => {
-    const d = req.params.id;
+    const id = req.params.id;
 
     userDB.getUserPosts(id)
         .then(user => {
@@ -55,7 +67,15 @@ router.get('/:id/posts', validateUserId, (req, res) => {
 });
 
 router.delete('/:id', (req, res) => {
+    const id = req.params.id;
 
+    userDB.remove(id)
+        .then(user => {
+            res.status(200).json(user)
+        })
+        .catch(error => {
+            res.status(500).json({ error: "Could not remove user"})
+        })
 });
 
 router.put('/:id', (req, res) => {
