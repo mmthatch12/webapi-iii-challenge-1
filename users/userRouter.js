@@ -23,7 +23,15 @@ router.get('/', (req, res) => {
 });
 
 router.get('/:id', (req, res) => {
+    const userId = req.params.id;
 
+    userDB.getById(userId)
+        .then(user => {
+            res.status(200).json(user)
+        })
+        .catch(error => {
+            res.status(500).json({ error: "Could not load users"})
+        })
 });
 
 router.get('/:id/posts', (req, res) => {
