@@ -17,8 +17,8 @@ router.post('/', validateUser, (req, res) => {
         })
 });
 
-//this isn't working yet, not sure what method to use to add posts to a user?
-router.post('/:id/posts', validatePost, (req, res) => {
+
+router.post('/:id/posts', validatePost, validateUserId,  (req, res) => {
     const useradd = req.body
     const id = req.params.id
 
@@ -45,7 +45,7 @@ router.get('/', (req, res) => {
         })
 });
 
-router.get('/:id', (req, res) => {
+router.get('/:id', validateUserId, (req, res) => {
     const userId = req.params.id;
 
     userDB.getById(userId)
@@ -57,7 +57,7 @@ router.get('/:id', (req, res) => {
         })
 });
 
-router.get('/:id/posts', (req, res) => {
+router.get('/:id/posts', validateUserId, (req, res) => {
     const id = req.params.id;
 
     userDB.getUserPosts(id)
@@ -69,7 +69,7 @@ router.get('/:id/posts', (req, res) => {
         })
 });
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', validateUserId, (req, res) => {
     const id = req.params.id;
 
     userDB.remove(id)
@@ -81,7 +81,7 @@ router.delete('/:id', (req, res) => {
         })
 });
 
-router.put('/:id', (req, res) => {
+router.put('/:id', validateUserId, (req, res) => {
     const userup = req.body;
     const id = req.params.id;
 
@@ -96,15 +96,19 @@ router.put('/:id', (req, res) => {
 
 //custom middleware
 
-//the 400 error isn't working yet, not sure what he means by store
+
 function validateUserId(req, res, next) {
-    if(req.id) {
-        userId = req.user
-        
-      } else {
-        res.status(400).json({ message: "invalid user id" })
-      }
-    
+    const id = req.params.id
+
+    userDB.getById(id)
+        .then(user => {
+            if(user) {
+                req.user = req.body
+            } else {
+                res.status(400).json({ message: "invalid user id" })
+              }
+        })
+
       next();
 };
 
@@ -113,9 +117,7 @@ function validateUser(req, res, next) {
         res.status(400).json({ message: "missing user data" })
       } else if (!req.body.name) {
         res.status(400).json({ message: "missing required name field" })
-      } else {
-        res.send('User validated!')
-      }
+      } 
     
       next();
 };
@@ -125,9 +127,7 @@ function validatePost(req, res, next) {
         res.status(400).json({ message: "missing post data" })
       } else if (!req.body.text) {
         res.status(400).json({ message: "missing required text field" })
-      } else {
-        res.send('Post validated!')
-      }
+      } 
     
       next();
 };
