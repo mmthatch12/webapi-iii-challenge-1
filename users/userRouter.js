@@ -18,16 +18,19 @@ router.post('/', validateUser, (req, res) => {
 });
 
 //this isn't working yet, not sure what method to use to add posts to a user?
-router.post('/:id/posts', (req, res) => {
+router.post('/:id/posts', validatePost, (req, res) => {
     const useradd = req.body
     const id = req.params.id
 
-    userDB.insert(useradd)
+    userDB.getById(id)
         .then(user => {
-            res.status(201).json(user)
-        })
-        .catch(error => {
-            res.status(500).json({ error: "Could not add to new user"})
+            postDB.insert(useradd)
+                .then(post => {
+                    res.status(201).json(post)
+                })
+                .catch(error => {
+                    res.status(500).json({ error: "Could not add user"})
+                })
         })
 
 });
@@ -42,7 +45,7 @@ router.get('/', (req, res) => {
         })
 });
 
-router.get('/:id', validateUserId, (req, res) => {
+router.get('/:id', (req, res) => {
     const userId = req.params.id;
 
     userDB.getById(userId)
@@ -54,7 +57,7 @@ router.get('/:id', validateUserId, (req, res) => {
         })
 });
 
-router.get('/:id/posts', validateUserId, (req, res) => {
+router.get('/:id/posts', (req, res) => {
     const id = req.params.id;
 
     userDB.getUserPosts(id)
@@ -120,10 +123,10 @@ function validateUser(req, res, next) {
 function validatePost(req, res, next) {
     if(!req.body) {
         res.status(400).json({ message: "missing post data" })
-      } else if (!req.body.test) {
+      } else if (!req.body.text) {
         res.status(400).json({ message: "missing required text field" })
       } else {
-        res.sent('Post validated!')
+        res.send('Post validated!')
       }
     
       next();
