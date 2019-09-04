@@ -79,7 +79,16 @@ router.delete('/:id', (req, res) => {
 });
 
 router.put('/:id', (req, res) => {
+    const userup = req.body;
+    const id = req.params.id;
 
+    userDB.update(id, userup)
+        .then(user => {
+            res.status(200).json(user)
+        })
+        .catch(error => {
+            res.status(500).json({ error: "Could not update user"})
+        })
 });
 
 //custom middleware
