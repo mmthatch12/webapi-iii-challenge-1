@@ -30,6 +30,18 @@ function validateUser(req, res, next) {
   next();
 }
 
+function validatePost(req, res, next) {
+  if(!req.body) {
+    res.status(400).json({ message: "missing post data" })
+  } else if (!req.body.test) {
+    res.status(400).json({ message: "missing required text field" })
+  } else {
+    res.sent('Post validated!')
+  }
+
+  next();
+}
+
 server.use(express.json())
 server.use(logger)
 
