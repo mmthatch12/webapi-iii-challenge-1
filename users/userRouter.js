@@ -134,7 +134,16 @@ function validateUser(req, res, next) {
 };
 
 function validatePost(req, res, next) {
-    if(!req.body) {
+
+    function isEmpty(obj) {
+        for(var key in obj) {
+            if(obj.hasOwnProperty(key))
+                return false;
+        }
+        return true;
+    }
+
+    if(isEmpty(req.body)) {
         res.status(400).json({ message: "missing post data" })
       } else if (!req.body.text) {
         res.status(400).json({ message: "missing required text field" })
