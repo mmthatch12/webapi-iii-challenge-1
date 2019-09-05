@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors')
 
 console.log('environment', process.env.NODE_ENV)
 
@@ -14,6 +15,7 @@ function logger(req, res, next) {
 }
 
 server.use(express.json())
+server.use(cors())
 server.use(logger)
 
 server.use('/users', userRouter)

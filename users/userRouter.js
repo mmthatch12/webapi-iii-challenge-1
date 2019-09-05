@@ -103,13 +103,12 @@ function validateUserId(req, res, next) {
     userDB.getById(id)
         .then(user => {
             if(user) {
-                req.user = req.body
+                next()
             } else {
                 res.status(400).json({ message: "invalid user id" })
               }
         })
 
-      next();
 };
 
 function validateUser(req, res, next) {
