@@ -19,7 +19,7 @@ module.exports = {
     },
   },
 
-  productions: {
+  production: {
     client: 'sqlite3',
     useNullAsDefault: true,
     connection: {
