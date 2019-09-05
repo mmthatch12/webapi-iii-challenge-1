@@ -43,6 +43,17 @@ router.delete('/:id', (req, res) => {
 });
 
 router.put('/:id', (req, res) => {
+    const postBody = req.body
+    const id  = req.params.id
+
+    postDB.update(id, postBody)
+        .then(post => {
+            res.status(200).json(post)
+        })
+        .catch(error => {
+            console.log(error)
+            res.status(500).json({ error: "Could not update post data"})
+        })
 
 });
 
