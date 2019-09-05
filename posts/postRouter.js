@@ -15,7 +15,7 @@ router.get('/', (req, res) => {
         })
 });
 
-router.get('/:id', (req, res) => {
+router.get('/:id', validatePostId, (req, res) => {
     const id = req.params.id
 
     postDB.getById(id)
@@ -29,7 +29,7 @@ router.get('/:id', (req, res) => {
 
 });
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', validatePostId, (req, res) => {
     const id = req.params.id
     postDB.remove(id)
         .then(post => {
@@ -42,7 +42,7 @@ router.delete('/:id', (req, res) => {
 
 });
 
-router.put('/:id', (req, res) => {
+router.put('/:id', validatePostId, (req, res) => {
     const postBody = req.body
     const id  = req.params.id
 
@@ -60,6 +60,18 @@ router.put('/:id', (req, res) => {
 // custom middleware
 
 function validatePostId(req, res, next) {
+    const id = req.params.id
+
+    postDB.getById(id)
+        .then(post => {
+            if(post) {
+                req.post = req.body
+            } else {
+                res.status(400).json({ message: "invalid post id" })
+              }
+        })
+
+      next();
 
 };
 
