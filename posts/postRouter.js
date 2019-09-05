@@ -1,9 +1,18 @@
-const express = 'express';
+const express = require('express');
 
 const router = express.Router();
 
-router.get('/', (req, res) => {
+const postDB = require('./postDb')
 
+router.get('/', (req, res) => {
+    postDB.get()
+        .then(post => {
+            res.status(200).json(post)
+        })
+        .catch(error => {
+            console.log(error)
+            res.status(500).json({ error: "Could not get posts" })
+        })
 });
 
 router.get('/:id', (req, res) => {
